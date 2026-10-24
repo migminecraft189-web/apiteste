@@ -1,0 +1,19 @@
+format_version: "11"
+default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
+project_type: android
+
+workflows:
+  primary:
+    steps:
+    - git-clone@8: {}
+    - script@1:
+        title: Generate Gradle wrapper and build APK
+        inputs:
+        - content: |-
+            set -e
+            gradle wrapper --gradle-version 8.9
+            chmod +x gradlew
+            ./gradlew --no-daemon assembleDebug
+    - deploy-to-bitrise-io@2:
+        inputs:
+        - deploy_path: app/build/outputs/apk/debug/app-debug.apk
